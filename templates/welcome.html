@@ -1,0 +1,23 @@
+{% extends "templates/base.html" %}
+
+{% block title %}Welcome{% endblock %}
+{% block body %}
+<div class="welcome">
+  <h1>Welcome to What a Small World</h1>
+
+  <div class="info">
+    <p>
+      This is an application where you can discover relationships between your friends you didn't know existed
+    </p>
+    <p>
+      In order to use What a Small World you must sign in with your
+      Facebook account.
+    </p>
+  </div>
+
+  <div id="login-flow">
+    <fb:login-button perms="email,user_relationships" show-faces="true"></fb:login-button>
+  </div>
+</div>
+<img class="promo" alt="Welcome to What a Small World" src="/smallworld.jpg" width="340px">
+{% endblock %}

@@ -1,0 +1,73 @@
+<html>
+<head>
+    <title>Progress Bar Demo</title>
+    <link href="progress/style.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="dialog/jquery-ui-1.8.18.custom.css" rel="stylesheet" type="text/css" />
+    <script language="javascript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script language="javascript" type="text/javascript" src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
+    <script language="javascript" type="text/javascript" src="progress/jquery.progressbar.js"></script>
+    <script language="javascript" type="text/javascript" src="dialog/jquery-ui-1.8.18.custom.min.js"></script>
+{#    <script src="dialog/jquery-ui-1.8.18.custom.min.js"></script>#}
+
+    <style type="text/css">
+
+    </style>
+</head>
+<body>
+    <script type="text/javascript" language="javascript">
+        function stringToPercent(num){
+            return Math.round(parseFloat(num) * 100);
+        }
+
+        var dialog;
+        $(document).ready(function () {
+            $("#pb1").progressBar();
+            $("#pb2").progressBar();
+            $("#pb3").progressBar();
+            $("#pb4").progressBar();
+
+            dialog = $( "#dialog-modal" ).dialog({
+                height: 220,
+                width: 370,
+                modal: true,
+                resizable: false,
+                closeOnEscape: false,
+                open: function(event, ui) {
+                    $(".ui-dialog-titlebar-close", dialog).hide();
+                }
+            });
+        });
+
+        function updateBars(){
+            $.get("/cache", function(data){
+                var progress = JSON.parse(data);
+                $('#pb1').progressBar(stringToPercent(progress["fetch_progress"]));
+                $('#pb2').progressBar(stringToPercent(progress["graph_progress"]));
+                $('#pb3').progressBar(stringToPercent(progress["edges_progress"]));
+                $('#pb4').progressBar(stringToPercent(progress["ratio_progress"]));
+                if(progress["ratio_progress"] == 1) {
+                    dialog.dialog("close");
+                }
+            });
+        }
+
+//        updateBars();
+        setInterval(updateBars, 1000);
+
+    </script>
+    <div id="dialog-modal" title="Please wait until finish">
+        <div class="column">
+            <span class="progress">Fetch Progress</span><br />
+            <span class="progress">Init Progress</span><br />
+            <span class="progress">Graph Progress</span><br />
+            <span class="progress">Ranking Progress</span>
+        </div>
+        <div class="column">
+            <span class="progressBar" id="pb1">0%</span><br />
+            <span class="progressBar" id="pb2">0%</span><br />
+            <span class="progressBar" id="pb3">0%</span><br />
+            <span class="progressBar" id="pb4">0%</span>
+        </div>
+    </div>
+</body>
+</html>

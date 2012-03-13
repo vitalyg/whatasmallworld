@@ -1,0 +1,8 @@
+span.progress { width: 150pt; padding-right: 10px; padding-left: 10px; }
+
+div.column { float:left; width: 180px; }
+
+.bar-dialog {
+    margin-top: 100px;
+    position: absolute;
+}

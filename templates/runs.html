@@ -1,0 +1,98 @@
+{% extends "templates/base.html" %}
+
+{% block title %}Recent Runs{% endblock %}
+{% block body %}
+    <script>
+        function postToFeed(userID)
+        {
+            var obj = {
+                method: 'feed',
+                to: userID,
+//                to: '681733894',
+                link: 'https://whatasmallworldfb.appspot.com/',
+                picture: 'https://bit.ly/yXPruD',
+                name: 'What a small world',
+                caption: 'Find out how they know each other',
+                description: 'This application helps you find friends of yours you weren\'t aware that they know each other'
+            };
+
+            function callback(response)
+            {
+                document.getElementById('msg').innerHTML = "Post ID: " + response['post_id'];
+            }
+
+            FB.ui(obj, callback);
+        }
+
+
+    </script>
+    <div id="runs">
+        <div id="dialog-modal" title="Please wait until finish" class='ui-helper-hidden'>
+            <div class="column">
+                <span class="progress">Fetch Progress</span><br />
+                <span class="progress">Graph Progress</span><br />
+{#                <span class="progress">Edges Progress</span><br />#}
+{#                <span class="progress">Filter Progress</span>#}
+            </div>
+            <div class="column">
+                <span class="progressBar" id="pb1">0%</span><br />
+                <span class="progressBar" id="pb2">0%</span><br />
+{#                <span class="progressBar" id="pb3">0%</span><br />#}
+{#                <span class="progressBar" id="pb4">0%</span>#}
+            </div>
+        </div>
+
+        {% if interestingFriends %}
+            <h2>Those are your friends who know each other</h2>
+            <h1>Click on a friend's name and ask how do they know each other</h1>
+            <table>
+                <tr>
+                    <td>
+                        <table id="left-table">
+                            <tbody id="recent-left-bd">
+                            {% for couple in firstFriends %}
+                                <tr>
+                                    <td><a href="javascript:void(0)" onclick="postToFeed({{ couple.firstID }})">{{ couple.firstName }}</a></td>
+                                    <td><a href="javascript:void(0)" onclick="postToFeed({{ couple.secondID }})">{{ couple.secondName }}</a></td>
+                                </tr>
+                                <tr>
+                                    <td><img class="pic" height="50" width="50" src="https://graph.facebook.com/{{ couple.firstID }}/picture"></td>
+                                    <td><img class="pic" height="50" width="50" src="https://graph.facebook.com/{{ couple.secondID }}/picture"></td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </td>
+                    <td style="width: 100px"></td>
+                    <td>
+                        <table id="right-table">
+                            <tbody id="recent-right-bd">
+                            {% for couple in lastFriends %}
+                                <tr>
+                                    <td><a href="javascript:void(0)" onclick="postToFeed({{ couple.firstID }}, '{{ couple.firstName }}', '{{ couple.secondName }}')">{{ couple.firstName }}</a></td>
+                                    <td><a href="javascript:void(0)" onclick="postToFeed({{ couple.secondID }}, '{{ couple.secondName }}', '{{ couple.firstName }}')">{{ couple.secondName }}</a></td>
+                                </tr>
+                                <tr>
+                                    <td><img class="pic" height="50" width="50" src="https://graph.facebook.com/{{ couple.firstID }}/picture"></td>
+                                    <td><img class="pic" height="50" width="50" src="https://graph.facebook.com/{{ couple.secondID }}/picture"></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        {% else %}
+            <script type="text/javascript">
+                var dialog;
+                $(document).ready(function () {
+                    initBars();
+                    dialog = createDialog();
+                });
+
+                setInterval(function() { updateBars(dialog, {{ userID }}); }, 1000);
+            </script>
+        {% endif %}
+    </div>
+{% endblock %}
